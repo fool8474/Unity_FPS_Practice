@@ -5,6 +5,7 @@ using UnityEngine;
 public class ShotRayCast : MonoBehaviour
 {
     public GameObject shotEffect;
+    public GameObject shotPos;
 
     void Start()
     {
@@ -24,9 +25,10 @@ public class ShotRayCast : MonoBehaviour
         RaycastHit hit;
         float distance = 100f;
 
-        if (Physics.Raycast(transform.position, transform.forward, out hit, distance))
+        if (Physics.Raycast(shotPos.transform.position, Camera.main.transform.forward, out hit, distance))
         {
-            Instantiate(shotEffect, hit.transform.position, Quaternion.identity);
+            Debug.Log("충돌 " + hit.transform.name + " " + hit.point);
+            Instantiate(shotEffect, hit.point, Quaternion.identity);
         }
     }
 }

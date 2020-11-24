@@ -6,31 +6,38 @@ using UnityEngine;
 public class PlayerMove : MonoBehaviour
 {
     // 플레이어 이동
-    public float speed = 5.0f;
-    CharacterController cc; // 캐릭터 컨트롤러 컴포넌트
+    [SerializeField] private float speed = 5.0f;
+
+    // 점프
+    [SerializeField] private float jumpPower = 10.0f;
+
+    // 중력
+    [SerializeField] private float gravity = 9.8f;
+
+    // 기본 이동
+    private Vector3 moveDirection;
+
+    // 컴포넌트
+    CharacterController characterController; // 캐릭터 컨트롤러 컴포넌트
+
 
     void Start()
     {
-        cc = GetComponent<CharacterController>();
+        characterController = GetComponent<CharacterController>();
+        moveDirection = Vector3.zero;
     }
 
     void Update()
     {
-        Move();    
-    }
+        if (characterController.isGrounded)
+        {
+            moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+            moveDirection = transform.TransformDirection(moveDirection);
+            moveDirection *= speed; 
+            if (Input.GetButton("Jump")) moveDirection.y = jumpPower;
+        }
 
-    private void Move()
-    {
-        // 플레이어 이동
-        float h = Input.GetAxis("Horizontal");
-        float v = Input.GetAxis("Vertical");
-        Vector3 dir = new Vector3(h, 0, v);
-        dir.Normalize(); // 대각선 이동 속도를 상하좌우와 동일하게 만들기.
-        //transform.Translate(dir * speed * Time.deltaTime);
-
-        // 카메라가 보는 방향으로 이동하도록
-        dir = Camera.main.transform.TransformDirection(dir);
-        cc.Move(dir * speed * Time.deltaTime);
-        //transform.Translate(dir * speed * Time.deltaTime);
+        moveDirection.y -= gravity * Time.deltaTime;
+        characterController.Move(moveDirection * Time.deltaTime);
     }
 }

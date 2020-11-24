@@ -10,13 +10,13 @@ public class CamRotate : MonoBehaviour
 
     void Start()
     {
-
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     void Update()
     {
-        float h = MouseManager.Instance.MouseAxis.x;
-        float v = MouseManager.Instance.MouseAxis.y;
+        float h = Input.GetAxis("Mouse X");
+        float v = Input.GetAxis("Mouse Y");
 
         Vector3 dir = new Vector3(v, h, 0);
         //transform.eulerAngles += dir * speed * Time.deltaTime; 
@@ -29,7 +29,7 @@ public class CamRotate : MonoBehaviour
         //transform.eulerAngles = angle;
 
         angleX += h * speed * Time.deltaTime;
-        angleY += v * speed * Time.deltaTime;
+        angleY -= v * speed * Time.deltaTime;
         angleY = Mathf.Clamp(angleY, -60, 60);
         transform.localEulerAngles = new Vector3(angleY, angleX, 0);
     }
